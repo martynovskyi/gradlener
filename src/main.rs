@@ -1,23 +1,28 @@
 
-use std::path::Path;
-use std::fs;
+mod script_file;
+use script_file::read_build_file;
+
 mod cli_struct;
 use clap::Parser;
 use cli_struct::Args;
 
+mod script_structure;
+
+mod groovy_dsl;
+
+
 fn main() {
     let args = Args::parse();
-    println!("Args: {:?}", args);
+    println!("Args: {:?}", args); 
 
-    let build_script = read_build_file(&args.file); 
+    let content = match read_build_file(&args.file) {
+        Some(c) => c,
+        None => { println!("Error: build script file [{}] not exist", args.file); std::process::exit(0); }
+    };
+
+    println!("Build script: {}", content);
+
+    groovy_dsl::parse(&content);
+
 }
 
-fn read_build_file(file: &String) -> String {
-    let path = Path::new(&file);
-    if path.exists() {  
-        let contents = fs::read_to_string(path).unwrap();
-        println!("{}", contents);
-        return contents;
-    }
-    return String::new();
-}

@@ -6,7 +6,7 @@ mod cli_struct;
 use clap::Parser;
 use cli_struct::Args;
 
-mod script_structure;
+mod build_script;
 
 mod groovy_dsl;
 
@@ -22,7 +22,10 @@ fn main() {
 
     println!("Build script: {}", content);
 
-    groovy_dsl::parse(&content);
+    let project = groovy_dsl::parse(&content);
+
+    
+    println!("{:?}", project);
 
 }
 

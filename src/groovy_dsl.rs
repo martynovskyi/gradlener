@@ -9,6 +9,8 @@ pub fn parse(script: &str) -> Project {
 
     let script_index = script_index::parse(script);
 
+    println!("Index: {:?}", script_index);
+
     let plugins: Plugins = Plugins {
         entries: Vec::new(),
     };

@@ -1,10 +1,7 @@
 
 use std::collections::HashMap;
-pub struct ScriptIndex {
 
-
-
-}
+pub const IGNORE_SYMBOLS: [char; 2] = ['{' , '}'];
 
 pub fn parse(script: &str) -> HashMap<String, (usize, usize)>  {
     let mut cursor = 0usize;
@@ -17,7 +14,7 @@ pub fn parse(script: &str) -> HashMap<String, (usize, usize)>  {
     let chars: Vec<char> = script.chars().collect();
     while  cursor < chars.len() {
         let c = chars[cursor];
-        if c.is_whitespace() {
+        if c.is_whitespace() || IGNORE_SYMBOLS.contains(&c)  {
              if lexeme_read {
                 lexeme_e = cursor;
                 let block_after = check_block(&chars, cursor);

@@ -20,10 +20,9 @@ pub fn parse(script: &str) -> HashMap<String, (usize, usize)>  {
                 let block_after = check_block(&chars, cursor);
                 if block_after.is_some() {
                     cursor = block_after.unwrap();
+                    println!("{} - {:?}", cursor, &script[lexeme_s..lexeme_e]);
+                    data.insert(String::from(&script[lexeme_s..lexeme_e]), (lexeme_s, cursor));
                 }
-                println!("{} - {:?}", cursor, &script[lexeme_s..lexeme_e]);
-                data.insert(String::from(&script[lexeme_s..lexeme_e]), (lexeme_s, cursor));
-
             }
             lexeme_s = 0;
             lexeme_e = 0;
@@ -46,21 +45,33 @@ pub fn parse(script: &str) -> HashMap<String, (usize, usize)>  {
 // return cursor position of end of block 
 fn check_block(chars: &Vec<char>, mut cursor: usize) -> Option<usize> {
     let mut block_counter = 0;
-    for c in &chars[cursor..] {
-        if !c.is_whitespace() {
-            if *c == '{' {
-                block_counter +=1;
-            }
+    let text = &chars[cursor..];
+    // println!("Looking for block [{}] {:?}", text.len(), text);
+    for c in text { 
+        if c.is_whitespace() {
+            cursor +=1;
+            continue;
+        }
 
-            if *c == '}' {
-                block_counter -= 1;
-            }
+        if *c == '{' {
+            block_counter +=1;
+            cursor +=1;
+            continue;
+        }
 
+        if *c == '}' {
+            block_counter -= 1;
+            cursor += 1;
             if block_counter == 0 {
                 return Option::Some(cursor);
             }
+            continue;
         }
-        cursor += 1;
+
+        if block_counter == 0 {
+            return Option::None;
+        }
+        cursor +=1;
     }
     Option::None
 

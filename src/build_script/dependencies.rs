@@ -1,7 +1,7 @@
 
 #[derive(Clone, Debug)]
 pub struct Dependencies {
-    pub entires: Vec<Dependency>,
+    pub entries: Vec<Dependency>,
 }
 
 

@@ -4,7 +4,7 @@ pub struct Plugins {
     pub entries: Vec<Plugin>,
 }
 
-#[derive(Clone, Debug)]
+#[derive( PartialEq, Clone, Debug)]
 pub struct Plugin {
     pub id: String,
     pub version: Option<String>,

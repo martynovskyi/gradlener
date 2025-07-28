@@ -24,7 +24,7 @@ pub fn parse(script: &str) -> Plugins {
         entries.push(Plugin {
             id: id.to_string(),
             version: parse_version(plugin_spec),
-            apply: Option::None
+            apply: parse_apply(plugin_spec)
         });
     }
 
@@ -36,12 +36,36 @@ fn parse_version(spec_line: &str) -> Option<String> {
 .map(|i| parse_next_string_literal(&spec_line[(i + 7)..]).to_string())
 }
 
+fn parse_apply(spec_line: &str) -> Option<bool> {
+    spec_line.find("apply")
+.map(|i| parse_next_lexeme(&spec_line[(i + 5)..]).eq("true"))
+}
+
 pub fn parse_next_string_literal(script: &str) -> &str {
     let mut found = false;
     let mut s = 0usize;
     let mut e = 0usize;
-        for (i, c) in script.chars().enumerate() {
+    for (i, c) in script.chars().enumerate() {
             if c == '"' || c == '\'' {
+                if !found {
+                s = i + 1;
+                found = true;
+            } else {
+                e = i;
+                break;
+            }
+            }
+    }
+   &script[s..e]
+}
+
+
+pub fn parse_next_lexeme(script: &str) -> &str {
+    let mut found = false;
+    let mut s = 0usize;
+    let mut e = 0usize;
+        for (i, c) in script.chars().enumerate() {
+            if !c.is_whitespace()  {
                 if !found {
                 s = i + 1;
                 found = true;
@@ -52,4 +76,4 @@ pub fn parse_next_string_literal(script: &str) -> &str {
             }
         }
    &script[s..e]
-} 
+}

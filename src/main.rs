@@ -10,6 +10,7 @@ mod build_script;
 
 mod groovy_dsl;
 
+mod text_parser;
 
 fn main() {
     let args = Args::parse();

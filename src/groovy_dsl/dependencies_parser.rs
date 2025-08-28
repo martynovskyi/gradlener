@@ -4,7 +4,7 @@ use crate::groovy_dsl::DEPENDENCIES_CONTAINER;
 use crate::groovy_dsl::BLOCK_START;
 
 pub fn parse(script: &str) -> Dependencies {
-
+    +
     if script.find(DEPENDENCIES_CONTAINER).is_some_and(|ind| ind != 0){
         panic!("Passed script is not a dependencies container");
     }

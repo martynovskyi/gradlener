@@ -40,3 +40,37 @@ pub fn tokenize_assigment_expression_with_string_literal() {
         Option::Some(tokenizer::Token{ lexeme: "\"some text\"" }));
     assert_eq!(tokenizer.next(), Option::None);
 }
+
+#[test]
+pub fn tokenize_assigment_expression_with_string_literal_with_comma() {
+    let text = "var = 'some text',";
+
+    let mut tokenizer = tokenizer::Tokenizer::new(text);
+
+    assert_eq!(tokenizer.next(),
+        Option::Some(tokenizer::Token{ lexeme: "var" }));
+    assert_eq!(tokenizer.next(),
+        Option::Some(tokenizer::Token{ lexeme: "=" }));
+    assert_eq!(tokenizer.next(),
+        Option::Some(tokenizer::Token{ lexeme: "'some text'" }));
+    assert_eq!(tokenizer.next(),
+        Option::Some(tokenizer::Token{ lexeme: "," }));
+    assert_eq!(tokenizer.next(), Option::None);
+}
+
+#[test]
+pub fn tokenize_method_with_param() {
+    let text = "implementation(\"some:dependency\")";
+
+    let mut tokenizer = tokenizer::Tokenizer::new(text);
+
+    assert_eq!(tokenizer.next(),
+        Option::Some(tokenizer::Token{ lexeme: "implementation" }));
+    assert_eq!(tokenizer.next(),
+        Option::Some(tokenizer::Token{ lexeme: "(" }));
+    assert_eq!(tokenizer.next(),
+        Option::Some(tokenizer::Token{ lexeme: "\"some:dependency\"" }));
+    assert_eq!(tokenizer.next(),
+        Option::Some(tokenizer::Token{ lexeme: ")" }));
+    assert_eq!(tokenizer.next(), Option::None);
+}

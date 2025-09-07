@@ -17,9 +17,12 @@ mod dependencies_parser_test;
 
 pub const PLUGINS_CONTAINER: &str = "plugins";
 pub const DEPENDENCIES_CONTAINER: &str = "dependencies";
-pub const BLOCK_START: char = '{';
-pub const BLOCK_END: char = '}';
+pub const BRACES_OPEN: char = '{';
+pub const BRACES_CLOSE: char = '}';
+pub const PARENTHESES_OPEN: char = '(';
+pub const PARENTHESES_CLOSE: char = ')';
 pub const D_QOUTE: char = '"';
+pub const QOUTE: char = '\'';
 
 pub fn parse(script: &str) -> Project {
 

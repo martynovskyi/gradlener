@@ -1,4 +1,4 @@
-use crate::groovy_dsl::D_QOUTE;
+use crate::groovy_dsl::{D_QOUTE, QOUTE, BRACES_OPEN, BRACES_CLOSE, PARENTHESES_OPEN, PARENTHESES_CLOSE};
 
 pub struct Tokenizer<'a> {
    pub text: &'a str,
@@ -9,6 +9,8 @@ pub struct Tokenizer<'a> {
 pub struct Token<'a> {
     pub lexeme: &'a str,
 }
+
+const DELIMETERS: [char; 4] = [BRACES_OPEN, BRACES_CLOSE, PARENTHESES_OPEN, PARENTHESES_CLOSE];
 
 impl<'a> Tokenizer<'a> {
     pub fn new(text: &'a str) -> Tokenizer<'a> {
@@ -24,9 +26,7 @@ impl<'a> Tokenizer<'a> {
         let text_chars = self.text[self.cursor..].chars();
         let mut next_char = Option::None;
         for (offset, ch) in text_chars.enumerate() {
-
-            // look for some specific char like end of string literal to ommit spaces inside of
-            // literal
+            // looking for end of string literal
             if let Some(nc) = next_char { if nc == ch {
                 let token = self.text[self.cursor..self.cursor + offset + 1].trim();
                 self.cursor += offset + 1;
@@ -35,18 +35,32 @@ impl<'a> Tokenizer<'a> {
                 continue;
             }
 
+            if DELIMETERS.contains(&ch) {
+                let mut token = self.text[self.cursor..self.cursor + offset].trim();
+                if token.is_empty() {
+                    token = self.text[self.cursor..self.cursor + offset + 1].trim();
+                    self.cursor += offset + 1;
+                } else {
+                    self.cursor += offset;
+                }
+                return Option::Some(Token { lexeme: token});
+            }
+
+            // exit on whitespace after some text
             if ch.is_whitespace() && offset > 0 {
                 let token = self.text[self.cursor..self.cursor + offset].trim();
                 self.cursor += offset + 1;
                 return Option::Some(Token { lexeme: token});
             }
 
-            if ch == D_QOUTE {
-                next_char = Option::Some(ch);
+            // string literal started, setup search for end
+            if ch == D_QOUTE || ch == QOUTE {
+                next_char = Option::Some(ch);    
                 continue;
             }
 
-            if offset + self.cursor + 1 == self.text.len(){
+            if offset + self.cursor + 1 == self.text.len() {
+                println!("End of text");
                 let token = self.text[self.cursor..].trim();
                 self.cursor += offset + 1;
                 return Option::Some(Token { lexeme: token});

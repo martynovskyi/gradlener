@@ -1,7 +1,6 @@
 use super::*;
 
 #[cfg(test)]
-
 #[test]
 pub fn new_tokenizer() {
     let text = "1 2 3";
@@ -16,15 +15,11 @@ pub fn tokenize_block() {
 
     let mut tokenizer = tokenizer::Tokenizer::new(text);
 
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "block" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "{" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "}" }));
-    assert_eq!(tokenizer.next(), Option::None);
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: "block" }));
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: "{" }));
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: "}" }));
+    assert_eq!(tokenizer.next(), None);
 }
-
 
 #[test]
 pub fn tokenize_assigment_expression_with_string_literal() {
@@ -32,13 +27,20 @@ pub fn tokenize_assigment_expression_with_string_literal() {
 
     let mut tokenizer = tokenizer::Tokenizer::new(text);
 
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "description" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "=" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "\"some text\"" }));
-    assert_eq!(tokenizer.next(), Option::None);
+    assert_eq!(
+        tokenizer.next(),
+        Some(tokenizer::Token {
+            lexeme: "description"
+        })
+    );
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: "=" }));
+    assert_eq!(
+        tokenizer.next(),
+        Some(tokenizer::Token {
+            lexeme: "\"some text\""
+        })
+    );
+    assert_eq!(tokenizer.next(), None);
 }
 
 #[test]
@@ -47,14 +49,15 @@ pub fn tokenize_assigment_expression_with_string_literal_with_comma() {
 
     let mut tokenizer = tokenizer::Tokenizer::new(text);
 
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "var" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "=" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "'some text'" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "," }));
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: "var" }));
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: "=" }));
+    assert_eq!(
+        tokenizer.next(),
+        Some(tokenizer::Token {
+            lexeme: "'some text'"
+        })
+    );
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: "," }));
     assert_eq!(tokenizer.next(), Option::None);
 }
 
@@ -64,13 +67,59 @@ pub fn tokenize_method_with_param() {
 
     let mut tokenizer = tokenizer::Tokenizer::new(text);
 
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "implementation" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "(" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: "\"some:dependency\"" }));
-    assert_eq!(tokenizer.next(),
-        Option::Some(tokenizer::Token{ lexeme: ")" }));
-    assert_eq!(tokenizer.next(), Option::None);
+    assert_eq!(
+        tokenizer.next(),
+        Some(tokenizer::Token {
+            lexeme: "implementation"
+        })
+    );
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: "(" }));
+    assert_eq!(
+        tokenizer.next(),
+        Some(tokenizer::Token {
+            lexeme: "\"some:dependency\""
+        })
+    );
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: ")" }));
+    assert_eq!(tokenizer.next(), None);
+}
+
+#[test]
+pub fn tokenize_with_linebreak() {
+    let text = "implementation(\"some:dependency\")
+    api 'some:dependency'";
+
+    let mut tokenizer = tokenizer::Tokenizer::new(text);
+
+    assert_eq!(
+        tokenizer.next(),
+        Some(tokenizer::Token {
+            lexeme: "implementation"
+        })
+    );
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: "(" }));
+    assert_eq!(
+        tokenizer.next(),
+        Some(tokenizer::Token {
+            lexeme: "\"some:dependency\""
+        })
+    );
+    assert_eq!(tokenizer.next(), Some(tokenizer::Token { lexeme: ")" }));
+    
+    assert_eq!(
+        tokenizer.next(),
+        Some(tokenizer::Token {
+            lexeme: "api"
+        })
+    );
+
+
+    assert_eq!(
+        tokenizer.next(),
+        Some(tokenizer::Token {
+            lexeme: "'some:dependency'"
+        })
+    );
+
+    assert_eq!(tokenizer.next(), None);
 }

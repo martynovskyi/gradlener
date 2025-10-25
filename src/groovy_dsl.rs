@@ -31,7 +31,6 @@ pub fn parse(script: &str) -> Project {
     println!("Index: {:?}", script_index);
 
 
-
     let plugins: Plugins = match script_index.get(PLUGINS_CONTAINER) {
         Some(pair) => { 
             let (start, end): (usize, usize) = *pair;

@@ -1,7 +1,8 @@
 
 use std::collections::HashMap;
+use crate::groovy_dsl::{BRACES_CLOSE, BRACES_OPEN};
 
-pub const IGNORE_SYMBOLS: [char; 2] = ['{' , '}'];
+pub const IGNORE_SYMBOLS: [char; 2] = [BRACES_OPEN , BRACES_CLOSE];
 
 pub fn parse(script: &str) -> HashMap<String, (usize, usize)>  {
     let mut cursor = 0usize;
